@@ -46,7 +46,7 @@ The SQL schema is available at `database/database.sql`. It contains table defini
 Contributors include: 
 
 1. Shimwa Aime Kelvin (Group Representative)
-2. Umwizerwa Achille Rigobert
+2. mwizerwa Achille Rigobert
 3. Imena Benjamin
 4. Ice Perla
 5. Ikaze Annick
