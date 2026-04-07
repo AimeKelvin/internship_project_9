@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+  <style>
+    .bg{fill:#fbfdff}
+    .card{fill:#fff;stroke:#e6e9ee;rx:8}
+    .table{fill:#f1f5f9;stroke:#e2e8f0;rx:8}
+    .title{font:700 18px 'Inter',Arial;fill:#0f172a}
+  </style>
+  <rect class="bg" width="100%" height="100%"/>
+  <g transform="translate(24,24)">
+    <rect class="card" width="952" height="552" rx="10"/>
+    <text class="title" x="24" y="36">Waiter — Tables</text>
+    <g transform="translate(24,60)">
+      <g transform="translate(0,0)">
+        <rect class="table" x="0" y="0" width="140" height="96"/>
+        <rect class="table" x="160" y="0" width="140" height="96"/>
+        <rect class="table" x="320" y="0" width="140" height="96"/>
+        <rect class="table" x="480" y="0" width="140" height="96"/>
+      </g>
+      <g transform="translate(0,120)">
+        <rect x="0" y="0" width="640" height="300" rx="8" fill="#fff" stroke="#e6eef8"/>
+        <text x="16" y="28" font-family="Inter, Arial" font-weight="600" font-size="14" fill="#0f172a">Create Order</text>
+        <text x="16" y="56" font-family="Inter, Arial" font-size="13" fill="#475569">Select items, quantities and table, then submit to send to kitchen.</text>
+      </g>
+    </g>
+  </g>
+</svg>
