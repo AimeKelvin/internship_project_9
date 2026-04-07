@@ -37,7 +37,7 @@ Relevant paths in this repository:
 Notes: the project currently lists `mysql2` as a dependency in `api/package.json`, so the default database target is MySQL/MariaDB. If you prefer PostgreSQL, swap the driver and update the SQL accordingly.
 
 
-## Database
+## Databases
 
 The SQL schema is available at `database/database.sql`. It contains table definitions and (optionally) seed statements used by the app. The ERD file `database/erd.mwb` is included as the visual design source.
 
