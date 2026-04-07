@@ -21,11 +21,6 @@ This README is intended to be an authoritative reference for development, deploy
 - [Database & migrations](#database--migrations)
 - [API reference & routes](#api-reference--routes)
 - [Real-time & sockets](#real-time--sockets)
-- [Security & best practices](#security--best-practices)
-- [Deployment & CI/CD recommendations](#deployment--cicd-recommendations)
-- [Testing, observability & maintenance](#testing-observability--maintenance)
-- [Contributing & governance](#contributing--governance)
-- [Appendices](#appendices)
 
 ## Quick summary
 
@@ -263,64 +258,6 @@ The backend exposes socket integration (see `api/src/utils/socket.js`) to broadc
 
 Use authenticated socket connections (send JWT during socket handshake or use token exchange endpoint).
 
-## Security & best practices
-
-- Keep `JWT_SECRET` and DB credentials out of source control. Use secrets manager in production.
-- Use HTTPS and secure cookies for production
-- Validate and sanitize all inputs (use DTOs or validation middleware)
-- Rate-limit authentication endpoints
-- Use role-based middleware (already present at `src/middlewares/roleMiddleware.js`)
-- Rotate secrets and maintain an audit trail for privilege changes
-
-## Deployment & CI/CD recommendations
-
-Suggested production architecture:
-
-- Backend: containerized Node.js app behind load balancer (use Dockerfile). Use auto-scaling groups or pods (Kubernetes).
-- Database: managed MySQL (RDS, Cloud SQL) with automated backups and replicas for reads.
-- Frontend: Next.js static export or server-side rendered deployment (Vercel, Netlify, or container).
-- Real-time: run socket server alongside backend or use a websocket service.
-
-Sample GitHub Actions workflow (high level):
-
-1. On push to main: run lint, tests, run prisma migrate:deploy to a staging DB, build client, build and push Docker images.
-2. Create tags/releases and deploy to production with environment-specific secrets.
-
-## Testing, observability & maintenance
-
-- Tests: add unit tests for controllers and integration tests for API routes (Jest + Supertest).
-- Linting: add ESLint and Prettier for code consistency.
-- Observability: structured logs (JSON), export metrics (Prometheus), set up alerts for error rate and latency.
-- Error tracking: Sentry or similar for runtime exceptions.
-
-## Contributing & governance
-
-- Follow GitHub Flow: feature branches, PRs, code review.
-- Include tests for new features and migrations.
-- Document public APIs and update README when changing contracts.
-
-## Appendix A — Example request/response
-
-Create order (POST /api/orders)
-
-Request:
-
-```json
-POST /api/orders
-{
-  "tableId": 5,
-  "items": [ { "menuItemId": 3, "quantity": 2 }, { "menuItemId": 5, "quantity": 1 } ]
-}
-```
-
-Response:
-
-```json
-{
-  "success": true,
-  "data": { "id": 123, "status": "PENDING", "total": 24.50 }
-}
-```
 
 ## Contributors
 
