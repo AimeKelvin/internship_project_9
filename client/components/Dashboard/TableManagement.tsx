@@ -93,6 +93,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
     <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
 
+        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
           <div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
@@ -105,16 +106,17 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] font-medium px-5 py-3.5 rounded-xl shadow-md transition text-sm sm:text-base"
+            className="inline-flex items-center gap-2 bg-[#C8FF8F] hover:bg-[#B6FF7C] text-[#0A3D2F] font-medium px-5 py-3.5 rounded-xl shadow-md transition text-sm sm:text-base"
           >
             <Plus className="w-5 h-5" />
             Add Table
           </button>
         </div>
 
+        {/* Floor Plan */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <UtensilsCrossed className="w-6 h-6" />
+            <UtensilsCrossed className="w-6 h-6 text-[#C8FF8F]" />
             Floor Plan
           </h3>
 
@@ -133,16 +135,16 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
                   key={table.id}
                   className="relative bg-white border border-gray-200 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-md hover:scale-105 transition-all duration-300"
                 >
-                  <div className="absolute -top-3 -right-3 bg-green-600 text-white rounded-full w-9 h-9 flex items-center justify-center font-bold text-sm shadow-lg">
+                  <div className="absolute -top-3 -right-3 bg-[#C8FF8F] text-[#0A3D2F] rounded-full w-9 h-9 flex items-center justify-center font-bold text-sm shadow-lg">
                     {table.capacity}
                   </div>
 
-                  <UtensilsCrossed className="w-10 h-10 mb-3 text-green-600" />
+                  <UtensilsCrossed className="w-10 h-10 mb-3 text-[#C8FF8F]" />
 
                   <div className="text-center">
                     <div className="font-bold text-gray-900 text-lg">Table {table.tableNumber}</div>
                     {table.section && (
-                      <div className="text-xs text-green-800 border border-green-200 bg-green-100 px-2 py-1 rounded-full mt-2 font-medium">
+                      <div className="text-xs text-[#0A3D2F] border border-[#C8FF8F] bg-[#C8FF8F]/20 px-2 py-1 rounded-full mt-2 font-medium">
                         {table.section}
                       </div>
                     )}
@@ -153,9 +155,10 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
           )}
         </section>
 
+        {/* Tables by Section */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-            <MapPin className="w-6 h-6 text-green-600" />
+            <MapPin className="w-6 h-6 text-[#C8FF8F]" />
             Tables by Section
           </h3>
 
@@ -166,7 +169,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
               {sortedSections.map(sec => (
                 <div key={sec}>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-3 h-3 bg-green-600 rounded-full" />
+                    <div className="w-3 h-3 bg-[#C8FF8F] rounded-full" />
                     <h4 className="text-lg font-semibold text-gray-800">
                       {sec} ({tablesBySection[sec].length} table{tablesBySection[sec].length !== 1 ? "s" : ""})
                     </h4>
@@ -176,15 +179,15 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
                     {tablesBySection[sec].map(table => (
                       <div
                         key={table.id}
-                        className="bg-gray-50 hover:bg-green-50 border border-gray-200 rounded-xl p-5 flex items-center gap-4 transition-all duration-200"
+                        className="bg-gray-50 hover:bg-[#C8FF8F]/10 border border-gray-200 rounded-xl p-5 flex items-center gap-4 transition-all duration-200"
                       >
-                        <div className="w-14 h-14 rounded-full bg-green-100/20 flex items-center justify-center font-bold border border-green-200 text-xl shadow-sm">
+                        <div className="w-14 h-14 rounded-full bg-[#C8FF8F]/20 flex items-center justify-center font-bold border border-[#C8FF8F] text-xl shadow-sm">
                           {table.tableNumber}
                         </div>
                         <div className="flex-1">
                           <div className="font-semibold text-gray-900">Table {table.tableNumber}</div>
                           <div className="text-sm text-gray-600 flex items-center gap-1 mt-1">
-                            <Users className="w-4 h-4" />
+                            <Users className="w-4 h-4 text-[#0A3D2F]" />
                             {table.capacity} seat{table.capacity !== 1 ? "s" : ""}
                           </div>
                         </div>
@@ -198,6 +201,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
         </section>
       </div>
 
+      {/* Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Table">
         <form onSubmit={handleCreate} className="space-y-5 p-1">
           <div className="relative">
@@ -209,7 +213,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
               value={tableNumber}
               onChange={(e) => setTableNumber(Math.max(1, Number(e.target.value)))}
               required
-              className="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-base"
+              className="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C8FF8F] focus:border-[#C8FF8F] outline-none transition text-base"
             />
           </div>
 
@@ -222,7 +226,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
               value={capacity}
               onChange={(e) => setCapacity(Math.max(1, Number(e.target.value)))}
               required
-              className="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-base"
+              className="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C8FF8F] focus:border-[#C8FF8F] outline-none transition text-base"
             />
           </div>
 
@@ -232,7 +236,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
               placeholder="Section (e.g. Patio, VIP, Bar) – optional"
               value={section}
               onChange={(e) => setSection(e.target.value)}
-              className="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition text-base"
+              className="w-full pl-11 pr-4 py-3.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#C8FF8F] focus:border-[#C8FF8F] outline-none transition text-base"
             />
           </div>
 
@@ -247,7 +251,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables
             <button
               type="submit"
               disabled={creating}
-              className="order-1 sm:order-2 px-6 py-3.5 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] disabled:bg-gray-300 rounded-xl font-medium transition flex items-center justify-center gap-2"
+              className="order-1 sm:order-2 px-6 py-3.5 bg-[#C8FF8F] hover:bg-[#B6FF7C] text-[#0A3D2F] disabled:bg-gray-300 rounded-xl font-medium transition flex items-center justify-center gap-2"
             >
               {creating ? "Adding Table..." : <><Plus className="w-5 h-5" />Add Table</>}
             </button>

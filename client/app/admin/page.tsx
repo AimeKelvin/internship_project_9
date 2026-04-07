@@ -154,8 +154,8 @@ const Dashboard: React.FC = () => {
 
      
       <div
-        className={`hidden lg:block sticky top-0 h-screen shrink-0 ${
-          sidebarOpen ? "w-72" : "w-20"
+        className={`hidden bg-[##FFFDF8] lg:block sticky top-0 h-screen shrink-0 ${
+          sidebarOpen ? "w-60" : "w-20"
         } transition-width duration-300`}
       >
         <Sidebar

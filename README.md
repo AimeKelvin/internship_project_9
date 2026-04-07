@@ -100,19 +100,19 @@ The client provides the following role-aware pages. The descriptions below inclu
 
 - Dashboard (Admin)
 
-  ![Admin dashboard](docs/images/dashboard.svg)
+  ![Admin dashboard](docs/images/dashboard.png)
 
   Management dashboard showing KPIs, recent orders, and quick actions for menu and table management.
 
 - Kitchen view
 
-  ![Kitchen view](docs/images/kitchen.svg)
+  ![Kitchen view](docs/images/kitchen.png)
 
   Kitchen view lists incoming orders with quick status controls (Start, Ready) and item summaries.
 
 - Waiter view
 
-  ![Waiter view](docs/images/waiter.svg)
+  ![Waiter view](docs/images/waiter.png)
 
   Waiter interface for table management and quick order creation.
 
