@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  /* Light mode colors (forced) */
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Force light mode values */
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Remove or override dark mode preference completely */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff !important;
+    --foreground: #171717 !important;
+    --color-background: #ffffff !important;
+    --color-foreground: #171717 !important;
+  }
+}
+
+/* Optional: Also force light colors if someone adds a dark class manually */
+.dark {
+  --background: #ffffff !important;
+  --foreground: #171717 !important;
+  --color-background: #ffffff !important;
+  --color-foreground: #171717 !important;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
