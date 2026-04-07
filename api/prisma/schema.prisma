@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      Role
+  email     String   @unique
+  password  String
+  orders    Order[]  @relation("WaiterOrders")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  WAITER
+  KITCHEN
+}
+
+model Table {
+  id          Int      @id @default(autoincrement())
+  tableNumber Int      @unique
+  capacity    Int
+  section     String?
+  orders      Order[]
+}
+
+model MenuItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  category    String   // flexible category
+  price       Float
+  description String?
+  isAvailable Boolean  @default(true)
+  orderItems  OrderItem[]
+  imageUrl    String?  
+}
+
+model Order {
+  id               Int         @id @default(autoincrement())
+  table            Table       @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  tableId          Int
+  waiter           User?       @relation("WaiterOrders", fields: [waiterId], references: [id], onDelete: SetNull)
+  waiterId         Int?
+  status           OrderStatus @default(PENDING)
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  orderItems       OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  SERVED
+}
+
+model OrderItem {
+  id                  Int      @id @default(autoincrement())
+  order               Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId             Int
+  menuItem            MenuItem @relation(fields: [menuItemId], references: [id])
+  menuItemId          Int
+  quantity            Int
+  specialInstructions String?
+}
