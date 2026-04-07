@@ -178,7 +178,7 @@ export default function LoginPage() {
 
               <a
                 href="#"
-                className="text-[#b6f27d] hover:opacity-80 font-medium"
+                className="text-[#0A3D2F]  hover:opacity-80 font-medium"
               >
                 Forgot password?
               </a>
@@ -188,7 +188,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#adf760] hover:bg-[#b6f27d] text-black font-semibold py-4 rounded-2xl transition"
+              className="w-full bg-[#adf760] hover:bg-[#b6f27d] text-[#0A3D2F]  py-4 rounded-2xl transition"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>

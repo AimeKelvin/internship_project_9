@@ -16,16 +16,20 @@ interface TableManagementProps {
   reload: { tables: () => Promise<void>; all?: () => Promise<void> };
 }
 
-const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => {
+const TableManagement: React.FC<TableManagementProps> = ({ tables: initialTables, reload }) => {
+  const [tables, setTables] = useState<Table[]>(initialTables);
   const [tableNumber, setTableNumber] = useState(
-    tables.length > 0 ? Math.max(...tables.map(t => t.tableNumber)) + 1 : 1
+    initialTables.length > 0 ? Math.max(...initialTables.map(t => t.tableNumber)) + 1 : 1
   );
   const [capacity, setCapacity] = useState(4);
   const [section, setSection] = useState("");
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Sync tableNumber 
+  useEffect(() => {
+    setTables(initialTables);
+  }, [initialTables]);
+
   useEffect(() => {
     if (tables.length > 0) {
       setTableNumber(Math.max(...tables.map(t => t.tableNumber)) + 1);
@@ -35,32 +39,46 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
   }, [tables]);
 
   async function handleCreate(e: React.FormEvent) {
-  e.preventDefault();
-  setCreating(true);
-  try {
-    await api.post("/tables", {
+    e.preventDefault();
+    setCreating(true);
+
+    const optimisticTable: Table = {
+      id: Date.now(),
       tableNumber,
       capacity,
-      section: section.trim() || null,
-    });
+      section: section.trim() || undefined,
+    };
 
-    // reset inputs
-    setTableNumber(prev => prev + 1);
+    setTables(prev => [...prev, optimisticTable]);
+    setIsModalOpen(false);
     setCapacity(4);
     setSection("");
-    setIsModalOpen(false);
 
-   
-    if (reload?.tables) {
-      await reload.tables();
+    try {
+      const res = await api.post("/tables", {
+        tableNumber,
+        capacity,
+        section: section.trim() || null,
+      });
+
+      setTables(prev =>
+        prev.map(t => (t.id === optimisticTable.id ? res.data : t))
+      );
+
+      setTableNumber(prev => prev + 1);
+
+      if (reload?.tables) {
+        await reload.tables();
+      }
+    } catch (err: any) {
+      setTables(prev => prev.filter(t => t.id !== optimisticTable.id));
+      setIsModalOpen(true);
+      console.error("create table", err);
+      alert(err?.response?.data?.message || "Failed to create table");
+    } finally {
+      setCreating(false);
     }
-  } catch (err: any) {
-    console.error("create table", err);
-    alert(err?.response?.data?.message || "Failed to create table");
-  } finally {
-    setCreating(false);
   }
-}
 
   const tablesBySection = tables.reduce((acc, table) => {
     const sec = table.section || "General";
@@ -115,7 +133,6 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
                   key={table.id}
                   className="relative bg-white border border-gray-200 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-md hover:scale-105 transition-all duration-300"
                 >
-                
                   <div className="absolute -top-3 -right-3 bg-green-600 text-white rounded-full w-9 h-9 flex items-center justify-center font-bold text-sm shadow-lg">
                     {table.capacity}
                   </div>
@@ -136,7 +153,6 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
           )}
         </section>
 
-   
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <MapPin className="w-6 h-6 text-green-600" />
@@ -181,7 +197,6 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
           )}
         </section>
       </div>
-
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Table">
         <form onSubmit={handleCreate} className="space-y-5 p-1">

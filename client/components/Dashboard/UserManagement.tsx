@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { UserPlus, Mail, Lock, User as UserIcon, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { UserPlus, Mail, Lock, User as UserIcon } from "lucide-react";
 import Modal from "../ui/Modal";
 import api from "@/lib/api";
 
@@ -17,13 +17,18 @@ interface UserManagementProps {
   reload: { users: () => Promise<void> };
 }
 
-const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
+const UserManagement: React.FC<UserManagementProps> = ({ users: initialUsers, reload }) => {
+  const [users, setUsers] = useState<User[]>(initialUsers);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"ADMIN" | "WAITER" | "KITCHEN">("WAITER");
   const [password, setPassword] = useState("");
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
 
   const roleColors: Record<string, string> = {
     ADMIN: "bg-purple-100 text-purple-800 border-purple-200",
@@ -34,33 +39,51 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
   const roleLabels = {
     ADMIN: "Admin",
     WAITER: "Waiter",
-    KITCHEN: "Kitchen ",
+    KITCHEN: "Kitchen",
   };
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     setCreating(true);
+
+    const optimisticUser: User = {
+      id: Date.now(),
+      name,
+      email,
+      role,
+    };
+
+    setUsers(prev => [...prev, optimisticUser]);
+    setIsModalOpen(false);
+    setName("");
+    setEmail("");
+    setPassword("");
+    setRole("WAITER");
+
     try {
-      await api.post("/users", { name, email, role, password });
-      setName("");
-      setEmail("");
-      setPassword("");
-      setRole("WAITER");
-      setIsModalOpen(false);
-      await reload?.users?.();
-    } catch (err) {
+      const res = await api.post("/users", { name, email, role, password });
+
+      setUsers(prev =>
+        prev.map(u => (u.id === optimisticUser.id ? res.data : u))
+      );
+
+      if (reload?.users) {
+        await reload.users();
+      }
+    } catch (err: any) {
+      setUsers(prev => prev.filter(u => u.id !== optimisticUser.id));
+      setIsModalOpen(true);
       console.error("create user", err);
-      alert("Failed to create user");
+      alert(err?.response?.data?.message || "Failed to create user");
     } finally {
       setCreating(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
 
-    
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
@@ -75,21 +98,18 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
             onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center gap-2 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] font-medium px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
           >
-            <UserPlus className="w-5 h-5 text-[#0A3D2F] " />
+            <UserPlus className="w-5 h-5 text-[#0A3D2F]" />
             Add Staff Member
           </button>
         </div>
 
-        
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-5 sm:p-6 border-b border-gray-100">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900">Existing Staff</h3>
             <p className="text-sm text-gray-500 mt-1">{users.length} team member{users.length !== 1 ? "s" : ""}</p>
           </div>
 
-        
           <div className="overflow-x-auto">
-    
             <table className="w-full hidden sm:table">
               <thead>
                 <tr className="border-b border-gray-200 text-left text-sm font-medium text-gray-600">
@@ -103,7 +123,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
                   <tr key={user.id} className="hover:bg-gray-50 transition">
                     <td className="px-6 py-5">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-linear-to-br from-gray-200 to-gray-300 flex items-center justify-center font-bold text-gray-700 text-sm">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center font-bold text-gray-700 text-sm">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                         <span className="font-medium text-gray-900">{user.name}</span>
@@ -151,9 +171,8 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
         </div>
       </div>
 
-  
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Create Staff Member">
-        <div className="p-1"> {/* Extra padding for mobile */}
+        <div className="p-1">
           <form onSubmit={handleCreate} className="space-y-5">
             <div className="relative">
               <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -211,14 +230,14 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
               <button
                 type="submit"
                 disabled={creating}
-                className="order-1 sm:order-2 px-6 py-3.5  bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] rounded-xl font-medium transition flex items-center justify-center gap-2"
+                className="order-1 sm:order-2 px-6 py-3.5 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] disabled:bg-gray-300 rounded-xl font-medium transition flex items-center justify-center gap-2"
               >
                 {creating ? (
                   <>Creating...</>
                 ) : (
                   <>
                     <UserPlus className="w-5 h-5" />
-                    Add  Member
+                    Add Member
                   </>
                 )}
               </button>

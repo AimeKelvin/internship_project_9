@@ -14,6 +14,7 @@ type MenuItem = {
   isAvailable: boolean;
   imageUrl?: string;
 };
+
 type OrderItemInput = { menuItemId: number; quantity: number };
 
 type Toast = {
@@ -22,16 +23,25 @@ type Toast = {
   message: string;
 };
 
+type Table = {
+  id: number;
+  tableNumber: number;
+  section?: string;
+};
+
 export default function NewOrderPage() {
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [cart, setCart] = useState<OrderItemInput[]>([]);
-  const [tableNumber, setTableNumber] = useState<number | "">("");
+  const [tables, setTables] = useState<Table[]>([]);
+  const [tableId, setTableId] = useState<number | "">("");
   const [menuSearch, setMenuSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("All");
   const [toasts, setToasts] = useState<Toast[]>([]);
 
+  // Load menu & tables
   useEffect(() => {
     loadMenu();
+    loadTables();
   }, []);
 
   async function loadMenu() {
@@ -43,11 +53,19 @@ export default function NewOrderPage() {
     }
   }
 
+  async function loadTables() {
+    try {
+      const res = await api.get("/tables");
+      setTables(res.data);
+      if (res.data.length > 0) setTableId(res.data[0].id);
+    } catch (err) {
+      console.error("Failed to load tables");
+    }
+  }
+
   const addToast = (type: "success" | "error", message: string) => {
     const id = Math.random().toString(36).substr(2, 9);
     setToasts((prev) => [...prev, { id, type, message }]);
-
-    // Auto remove after 4 seconds
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
@@ -95,13 +113,15 @@ export default function NewOrderPage() {
   const itemCount = cart.reduce((sum, i) => sum + i.quantity, 0);
 
   async function submitOrder() {
-    if (!tableNumber || cart.length === 0) return;
+    if (!tableId || cart.length === 0) return;
+
+    const selectedTable = tables.find((t) => t.id === tableId);
 
     try {
-      await api.post("/orders", { tableNumber, items: cart });
+      await api.post("/orders", { tableNumber: selectedTable?.tableNumber, items: cart });
       setCart([]);
-      setTableNumber("");
-      addToast("success", `Order sent to kitchen • Table ${tableNumber}`);
+      setTableId(tables.length > 0 ? tables[0].id : "");
+      addToast("success", `Order sent to kitchen • Table ${selectedTable?.tableNumber}`);
     } catch (err) {
       addToast("error", "Failed to send order. Try again.");
     }
@@ -129,7 +149,10 @@ export default function NewOrderPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">New Order</h1>
-                <p className="text-sm text-gray-500 mt-1">Table {tableNumber || "-"}</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Table{" "}
+                  {tableId ? tables.find((t) => t.id === tableId)?.tableNumber : "-"}
+                </p>
               </div>
               <div className="relative">
                 <ShoppingCart className="w-7 h-7 text-gray-700" />
@@ -148,16 +171,20 @@ export default function NewOrderPage() {
         </div>
 
         <div className="px-5 pt-6 space-y-8">
-          {/* Table Number */}
+          {/* Table Dropdown */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-            <input
-              type="number"
-              min={1}
-              placeholder="Table number"
-              value={tableNumber}
-              onChange={(e) => setTableNumber(e.target.value ? Number(e.target.value) : "")}
-              className="w-full text-2xl font-bold text-gray-900 bg-transparent outline-none placeholder:text-gray-400 placeholder:text-xl placeholder:font-medium placeholder:tracking-tight [-moz-appearance:textfield] [&::-webkit-outer-spin-button]:m-0 [&::-webkit-inner-spin-button]:m-0"
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Table</label>
+            <select
+              value={tableId}
+              onChange={(e) => setTableId(Number(e.target.value))}
+              className="w-full text-2xl font-bold text-gray-900 bg-transparent outline-none"
+            >
+              {tables.map((t) => (
+                <option key={t.id} value={t.id}>
+                  Table {t.tableNumber} {t.section ? `- ${t.section}` : ""}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Cart */}
@@ -189,7 +216,11 @@ export default function NewOrderPage() {
                         className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-4"
                       >
                         {item.imageUrl ? (
-                          <img src={item.imageUrl} alt={item.name} className="w-16 h-16 rounded-xl object-cover" />
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="w-16 h-16 rounded-xl object-cover"
+                          />
                         ) : (
                           <div className="w-16 h-16 bg-gray-200 rounded-xl" />
                         )}
@@ -198,14 +229,23 @@ export default function NewOrderPage() {
                           <p className="text-sm text-gray-500">${item.price.toFixed(2)} each</p>
                         </div>
                         <div className="flex items-center gap-3">
-                          <button onClick={() => updateQuantity(c.menuItemId, -1)} className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 transition">
+                          <button
+                            onClick={() => updateQuantity(c.menuItemId, -1)}
+                            className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 active:scale-95 transition"
+                          >
                             <Minus className="w-4 h-4 mx-auto" />
                           </button>
                           <span className="w-10 text-center font-semibold text-lg">{c.quantity}</span>
-                          <button onClick={() => updateQuantity(c.menuItemId, 1)} className="w-9 h-9 rounded-full bg-black text-white hover:bg-gray-800 active:scale-95 transition">
+                          <button
+                            onClick={() => updateQuantity(c.menuItemId, 1)}
+                            className="w-9 h-9 rounded-full bg-black text-white hover:bg-gray-800 active:scale-95 transition"
+                          >
                             <Plus className="w-4 h-4 mx-auto" />
                           </button>
-                          <button onClick={() => removeFromCart(c.menuItemId)} className="ml-2 text-red-500 hover:bg-red-50 rounded-lg p-2 active:scale-95 transition">
+                          <button
+                            onClick={() => removeFromCart(c.menuItemId)}
+                            className="ml-2 text-red-500 hover:bg-red-50 rounded-lg p-2 active:scale-95 transition"
+                          >
                             <Trash2 className="w-5 h-5" />
                           </button>
                         </div>
@@ -229,9 +269,9 @@ export default function NewOrderPage() {
                 </div>
                 <button
                   onClick={submitOrder}
-                  disabled={!tableNumber}
+                  disabled={!tableId}
                   className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
-                    tableNumber
+                    tableId
                       ? "bg-white text-black hover:bg-gray-100 active:scale-98"
                       : "bg-gray-700 text-gray-400 cursor-not-allowed"
                   }`}
@@ -256,7 +296,10 @@ export default function NewOrderPage() {
                   className="w-full pl-12 pr-10 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition"
                 />
                 {menuSearch && (
-                  <button onClick={() => setMenuSearch("")} className="absolute right-4 top-1/2 -translate-y-1/2">
+                  <button
+                    onClick={() => setMenuSearch("")}
+                    className="absolute right-4 top-1/2 -translate-y-1/2"
+                  >
                     <X className="w-5 h-5 text-gray-400" />
                   </button>
                 )}
@@ -267,7 +310,9 @@ export default function NewOrderPage() {
                 className="px-5 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-black"
               >
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
                 ))}
               </select>
             </div>
@@ -291,7 +336,11 @@ export default function NewOrderPage() {
                     } transition-all`}
                   >
                     {item.imageUrl ? (
-                      <img src={item.imageUrl} alt={item.name} className="w-full h-40 object-cover" />
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-full h-40 object-cover"
+                      />
                     ) : (
                       <div className="w-full h-40 bg-gradient-to-br from-gray-100 to-gray-200" />
                     )}
@@ -299,9 +348,13 @@ export default function NewOrderPage() {
                       <h3 className="font-semibold text-gray-900">{item.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{item.category}</p>
                       <div className="flex justify-between items-end mt-3">
-                        <span className="text-xl font-bold text-gray-900">${item.price.toFixed(2)}</span>
+                        <span className="text-xl font-bold text-gray-900">
+                          ${item.price.toFixed(2)}
+                        </span>
                         {!item.isAvailable && (
-                          <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">Unavailable</span>
+                          <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full">
+                            Unavailable
+                          </span>
                         )}
                       </div>
                     </div>
@@ -325,49 +378,48 @@ export default function NewOrderPage() {
         </div>
 
         {/* Toast Notifications */}
-  {/* Toast Notifications — NOW FULLY VISIBLE */}
-<div className="fixed inset-x-0 bottom-24 lg:bottom-8 left-1/2 -translate-x-1/2 z-[60] pointer-events-none px-5">
-  <div className="flex flex-col items-center gap-3">
-    <AnimatePresence>
-      {toasts.map((toast) => (
-        <motion.div
-          key={toast.id}
-          layout
-          initial={{ opacity: 0, y: 60, scale: 0.85 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -40, scale: 0.85 }}
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="pointer-events-auto w-full max-w-sm"
-        >
-          <div
-            className={`flex items-center justify-between gap-4 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-2xl border ${
-              toast.type === "success"
-                ? "bg-white/95 border-green-200"
-                : "bg-white/95 border-red-200"
-            }`}
-          >
-            <div className="flex items-center gap-3">
-              {toast.type === "success" ? (
-                <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
-              ) : (
-                <XCircle className="w-6 h-6 text-red-600 shrink-0" />
-              )}
-              <span className="font-medium text-gray-900 text-sm sm:text-base">
-                {toast.message}
-              </span>
-            </div>
-            <button
-              onClick={() => removeToast(toast.id)}
-              className="text-gray-400 hover:text-gray-600 transition"
-            >
-              <X className="w-5 h-5" />
-            </button>
+        <div className="fixed inset-x-0 bottom-24 lg:bottom-8 left-1/2 -translate-x-1/2 z-[60] pointer-events-none px-5">
+          <div className="flex flex-col items-center gap-3">
+            <AnimatePresence>
+              {toasts.map((toast) => (
+                <motion.div
+                  key={toast.id}
+                  layout
+                  initial={{ opacity: 0, y: 60, scale: 0.85 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -40, scale: 0.85 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  className="pointer-events-auto w-full max-w-sm"
+                >
+                  <div
+                    className={`flex items-center justify-between gap-4 px-6 py-4 rounded-2xl shadow-2xl backdrop-blur-2xl border ${
+                      toast.type === "success"
+                        ? "bg-white/95 border-green-200"
+                        : "bg-white/95 border-red-200"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      {toast.type === "success" ? (
+                        <CheckCircle2 className="w-6 h-6 text-green-600 shrink-0" />
+                      ) : (
+                        <XCircle className="w-6 h-6 text-red-600 shrink-0" />
+                      )}
+                      <span className="font-medium text-gray-900 text-sm sm:text-base">
+                        {toast.message}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => removeToast(toast.id)}
+                      className="text-gray-400 hover:text-gray-600 transition"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
-        </motion.div>
-      ))}
-    </AnimatePresence>
-  </div>
-</div>
+        </div>
       </div>
     </ProtectedRoute>
   );
