@@ -150,9 +150,9 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="flex bg-slate-50 min-h-screen relative">
+    <div className="flex bg-[##FFFDF8] min-h-screen relative">
 
-      {/* Sidebar — only on large screens */}
+     
       <div
         className={`hidden lg:block sticky top-0 h-screen shrink-0 ${
           sidebarOpen ? "w-72" : "w-20"
@@ -166,8 +166,7 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      {/* MAIN CONTENT */}
-      <main className="flex-1 overflow-y-auto p-6 bg-slate-50 pb-24 lg:pb-6">
+      <main className="flex-1 overflow-y-auto p-6 bg-[#FFFDF8] pb-24 lg:pb-6">
         <div className="animate-fade-in space-y-6">
           {activeTab === "dashboard" && <AnalyticsDashboard users={users} orders={orders} />}
           {activeTab === "users" && (
@@ -189,7 +188,6 @@ const Dashboard: React.FC = () => {
         </div>
       </main>
 
-      {/* BOTTOM NAV — only on mobile/tablet */}
       <BottomNav activeTab={activeTab} setActiveTab={setActiveTab} />
     </div>
   );

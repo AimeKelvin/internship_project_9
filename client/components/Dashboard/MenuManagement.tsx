@@ -79,7 +79,7 @@ const MenuManagement: React.FC<MenuManagementProps> = ({ menuItems, createMenuIt
   }, [filteredItems]);
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFFDF8] px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header + Controls */}
@@ -96,7 +96,7 @@ const MenuManagement: React.FC<MenuManagementProps> = ({ menuItems, createMenuIt
 
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 bg-green-800 hover:bg-green-700 text-white font-medium px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
+              className="inline-flex items-center gap-2 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] font-medium px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
             >
               <Plus className="w-5 h-5" />
               Add Menu Item
@@ -276,7 +276,7 @@ const MenuManagement: React.FC<MenuManagementProps> = ({ menuItems, createMenuIt
             <button
               type="submit"
               disabled={isSubmitting}
-              className="order-1 sm:order-2 px-6 py-3.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white rounded-xl font-medium transition flex items-center justify-center gap-2"
+              className="order-1 sm:order-2 px-6 py-3.5 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] diabled:gray-300 rounded-xl font-medium transition flex items-center justify-center gap-2"
             >
               {isSubmitting ? (
                 "Adding Item..."

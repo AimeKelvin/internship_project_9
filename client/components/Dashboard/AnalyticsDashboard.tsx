@@ -109,28 +109,28 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ users = [], ord
       value: orders.length,
       change: `+${revenueGrowth}% today`,
       icon: ShoppingBag,
-      color: "bg-blue-600",
+      color: "bg-[#adf760]",
     },
     {
       title: "Revenue",
       value: fmt(totalRevenue),
       change: `+${revenueGrowth}% vs yesterday`,
       icon: DollarSign,
-      color: "bg-green-700",
+      color: "bg-[#adf760]",
     },
     {
       title: "Pending Orders",
       value: pendingOrders,
       change: `${inProgressOrders} in progress`,
       icon: Clock,
-      color: "bg-yellow-500",
+      color: "bg-[#adf760]",
     },
     {
       title: "Staff Members",
       value: users.length,
       change: `${users.filter((u) => u.role === "WAITER").length} waiters`,
       icon: UsersIcon,
-      color: "bg-purple-600",
+      color: "bg-[#adf760]",
     },
   ];
 
@@ -142,9 +142,9 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ users = [], ord
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFFDF8] px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header - Stacked on mobile */}
+      
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Dashboard</h2>
@@ -159,7 +159,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ users = [], ord
           </div>
         </div>
 
-        {/* Stats Grid - 1→2→4 columns */}
+    
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-10">
           {stats.map((stat, i) => (
             <div
@@ -169,7 +169,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ users = [], ord
               <div className="p-5 sm:p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className={`p-3 rounded-xl ${stat.color}`}>
-                    <stat.icon className="w-6 h-6 text-white" />
+                    <stat.icon className="w-6 h-6 text-[#0A3D2F] " />
                   </div>
                 </div>
 
@@ -181,9 +181,8 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ users = [], ord
           ))}
         </div>
 
-        {/* Waiters + Items - Stack on mobile, side-by-side on lg+ */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Top Waiters */}
+        
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5">
               Top Performing Waiters
@@ -220,7 +219,7 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({ users = [], ord
             </div>
           </div>
 
-          {/* Most Ordered Items */}
+
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 sm:p-6">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-5">
               Most Ordered Items

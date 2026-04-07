@@ -62,18 +62,17 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
-      {/* DESKTOP SIDEBAR (lg and up) */}
+
       <aside
         className={`hidden lg:flex flex-col h-full w-64 transition-all duration-300 shadow-lg
-        bg-slate-50  text-[#1F2937]`}
+        bg-[#FAFAFA]  text-[#1F2937]`}
       >
         {/* HEADER */}
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src="/icon.png" alt="Platr OS Logo" className="h-10 w-auto" />
             <div>
-              <h1 className="text-xl font-bold text-black">Platr OS</h1>
-              <p className="text-xs text-gray-500">Admin Panel</p>
+              <h1 className="text-xl font-bold text-[#0A3D2F] ">Platr OS</h1>
             </div>
           </div>
         </div>
@@ -83,10 +82,10 @@ const Sidebar: React.FC<SidebarProps> = ({
           {menuItems.map((item) => (
             <button
               key={item.key}
-              className={`w-full text-left p-3 rounded-lg flex items-center gap-3 transition-all duration-200
+              className={`w-full text-left p-3 rounded-lg flex items-center gap-3 transition-all duration-200 text-[#0A3D2F] 
                 ${
                   activeTab === item.key
-                    ? "bg-green-100 shadow-md"
+                    ? "bg-[#d1ff9f] "
                     : "hover:bg-green-50"
                 }`}
               onClick={() => setActiveTab(item.key as TabType)}
@@ -100,7 +99,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         {/* FOOTER */}
         <div className="p-4 border-t border-gray-200 space-y-3">
           <div className="flex items-center gap-3 p-3 rounded-lg bg-green-50">
-            <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center font-bold text-white shadow-sm">
+            <div className="w-10 h-10 rounded-full bg-[#adf760] flex items-center justify-center font-bold text-[#0A3D2F] shadow-sm">
               {user?.name ? user.name[0].toUpperCase() : "A"}
             </div>
             <div className="flex-1 min-w-0">
@@ -115,7 +114,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
           <button
             onClick={handleLogout}
-            className="w-full p-3 rounded-lg bg-red-500 hover:bg-red-700 transition-colors flex items-center justify-center gap-2 font-medium text-white"
+            className="w-full p-3 rounded-lg bg-red-700 transition-colors flex items-center justify-center gap-2 font-medium text-white"
           >
             <LogOut size={18} />
             Logout

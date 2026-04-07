@@ -92,9 +92,9 @@ Error model:
 
 The client provides the following role-aware pages. The descriptions below include simple ASCII wireframes to illustrate layout and primary components.
 
-- Login page
 
-  ![Login screen](docs/images/login.svg)
+
+  ![Login screen](docs/images/login.png)
 
   A focused sign-in screen used by staff to access role-aware interfaces.
 

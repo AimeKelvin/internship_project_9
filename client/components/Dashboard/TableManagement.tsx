@@ -25,7 +25,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Sync tableNumber when tables change
+  // Sync tableNumber 
   useEffect(() => {
     if (tables.length > 0) {
       setTableNumber(Math.max(...tables.map(t => t.tableNumber)) + 1);
@@ -50,7 +50,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
     setSection("");
     setIsModalOpen(false);
 
-    // ✅ safe reload
+   
     if (reload?.tables) {
       await reload.tables();
     }
@@ -72,9 +72,9 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
   const sortedSections = Object.keys(tablesBySection).sort();
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        {/* Header */}
+
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
           <div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
@@ -87,14 +87,13 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-3.5 rounded-xl shadow-md transition text-sm sm:text-base"
+            className="inline-flex items-center gap-2 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] font-medium px-5 py-3.5 rounded-xl shadow-md transition text-sm sm:text-base"
           >
             <Plus className="w-5 h-5" />
             Add Table
           </button>
         </div>
 
-        {/* Visual Floor Layout */}
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <UtensilsCrossed className="w-6 h-6" />
@@ -116,7 +115,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
                   key={table.id}
                   className="relative bg-white border border-gray-200 rounded-xl p-5 flex flex-col items-center justify-center hover:shadow-md hover:scale-105 transition-all duration-300"
                 >
-                  {/* Capacity Badge */}
+                
                   <div className="absolute -top-3 -right-3 bg-green-600 text-white rounded-full w-9 h-9 flex items-center justify-center font-bold text-sm shadow-lg">
                     {table.capacity}
                   </div>
@@ -137,7 +136,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
           )}
         </section>
 
-        {/* Tables by Section */}
+   
         <section className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
           <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
             <MapPin className="w-6 h-6 text-green-600" />
@@ -183,7 +182,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
         </section>
       </div>
 
-      {/* Add Table Modal */}
+
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Table">
         <form onSubmit={handleCreate} className="space-y-5 p-1">
           <div className="relative">
@@ -233,7 +232,7 @@ const TableManagement: React.FC<TableManagementProps> = ({ tables, reload }) => 
             <button
               type="submit"
               disabled={creating}
-              className="order-1 sm:order-2 px-6 py-3.5 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white rounded-xl font-medium transition flex items-center justify-center gap-2"
+              className="order-1 sm:order-2 px-6 py-3.5 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] disabled:bg-gray-300 rounded-xl font-medium transition flex items-center justify-center gap-2"
             >
               {creating ? "Adding Table..." : <><Plus className="w-5 h-5" />Add Table</>}
             </button>

@@ -57,10 +57,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FFFDF8] px-4 py-6 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
+    
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
@@ -73,23 +73,23 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
 
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 bg-green-800 hover:bg-green-700 text-white font-medium px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
+            className="inline-flex items-center gap-2 bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] font-medium px-5 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm sm:text-base"
           >
-            <UserPlus className="w-5 h-5" />
+            <UserPlus className="w-5 h-5 text-[#0A3D2F] " />
             Add Staff Member
           </button>
         </div>
 
-        {/* Staff List Card */}
+        
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="p-5 sm:p-6 border-b border-gray-100">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900">Existing Staff</h3>
             <p className="text-sm text-gray-500 mt-1">{users.length} team member{users.length !== 1 ? "s" : ""}</p>
           </div>
 
-          {/* Responsive Table → Cards on Mobile */}
+        
           <div className="overflow-x-auto">
-            {/* Desktop & Tablet: Table */}
+    
             <table className="w-full hidden sm:table">
               <thead>
                 <tr className="border-b border-gray-200 text-left text-sm font-medium text-gray-600">
@@ -120,7 +120,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
               </tbody>
             </table>
 
-            {/* Mobile: Cards */}
             <div className="sm:hidden divide-y divide-gray-100">
               {users.map((user) => (
                 <div key={user.id} className="p-5 hover:bg-gray-50 transition">
@@ -152,7 +151,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
         </div>
       </div>
 
-      {/* Modal - Enhanced for Mobile */}
+  
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Create Staff Member">
         <div className="p-1"> {/* Extra padding for mobile */}
           <form onSubmit={handleCreate} className="space-y-5">
@@ -212,7 +211,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ users, reload }) => {
               <button
                 type="submit"
                 disabled={creating}
-                className="order-1 sm:order-2 px-6 py-3.5 bg-green-800 hover:bg-green-700 disabled:bg-green-400 text-white rounded-xl font-medium transition flex items-center justify-center gap-2"
+                className="order-1 sm:order-2 px-6 py-3.5  bg-[#adf760] hover:bg-[#98fd39] text-[#0A3D2F] rounded-xl font-medium transition flex items-center justify-center gap-2"
               >
                 {creating ? (
                   <>Creating...</>
